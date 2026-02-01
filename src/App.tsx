@@ -67,7 +67,7 @@ function App() {
           </header>
         )}
 
-        <section className={`fade-in ${userData ? 'mb-12' : 'search-container'}`} style={{ animationDelay: '0.1s' }}>
+        <section className={`fade-in ${userData ? 'search-compact' : 'search-container'}`} style={{ animationDelay: '0.1s' }}>
           <form onSubmit={handleFetch} className={`search-form ${!userData ? 'glass-card' : ''}`}>
             <div className="search-input-wrapper">
               <Search size={20} className="search-icon" />
