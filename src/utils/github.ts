@@ -65,7 +65,7 @@ export const fetchGitHubUser = async (username: string): Promise<GitHubUser> => 
       if (Array.isArray(contributionsData[0])) {
         // Nested array: each item is a week containing days
         
-        const weeks = contributionsData.map((weekData: any[], weekIndex: number) => {
+        const weeks = contributionsData.map((weekData: any[]) => {
           const contributionDays = weekData.map((day: any, dayIndex: number) => ({
             color: day.color || levelColors[day.level || 0] || '#ebedf0',
             contributionCount: day.contributionCount || day.count || 0,

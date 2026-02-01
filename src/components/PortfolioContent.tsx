@@ -73,7 +73,7 @@ const PortfolioContent: React.FC<PortfolioContentProps> = ({ user, pinnedRepos }
                             remarkPlugins={[remarkGfm]}
                             rehypePlugins={[rehypeRaw]}
                             components={{
-                                img: ({ node, src, alt, ...props }) => {
+                                img: ({ src, alt, ...props }) => {
                                     // Filter out GitHub stats cards, badges, and other problematic external images
                                     const blockedDomains = [
                                         'github-readme-stats',
