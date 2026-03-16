@@ -3,11 +3,25 @@
   --primary-dark: #1d4ed8;
   --secondary: #64748b;
   --background: #f8fafc;
+  --background-secondary: #e2e8f0;
   --card: #ffffff;
   --text: #0f172a;
   --text-muted: #475569;
   --border: #e2e8f0;
   --accent: #8b5cf6;
+}
+
+:root.dark {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --secondary: #94a3b8;
+  --background: #0f172a;
+  --background-secondary: #1e293b;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --accent: #a78bfa;
 }
 
 *, *::before, *::after {
@@ -28,6 +42,45 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+:root.dark body {
+  background: radial-gradient(circle at top right, #1e3a5f, transparent),
+    radial-gradient(circle at bottom left, #1e293b, transparent);
+  background-color: var(--background);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  padding: 0.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+:root.dark .theme-toggle {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark .theme-toggle:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .max-w-4xl {
@@ -71,6 +124,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
   border-radius: 1.5rem;
+}
+
+:root.dark .glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 /* Buttons */
@@ -120,6 +179,11 @@ body {
   transition: all 0.25s ease;
   background: rgba(255, 255, 255, 0.9);
   box-sizing: border-box;
+  color: var(--text);
+}
+
+:root.dark .input-field {
+  background: rgba(30, 41, 59, 0.9);
 }
 
 .input-field:focus {
@@ -128,8 +192,12 @@ body {
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
 }
 
+:root.dark .input-field:focus {
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+}
+
 .input-field::placeholder {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 /* Animations */
@@ -199,6 +267,12 @@ body {
   color: #dc2626;
   font-weight: 500;
   font-size: 0.9rem;
+}
+
+:root.dark .error-message {
+  background: rgba(127, 29, 29, 0.3);
+  border-color: #991b1b;
+  color: #fca5a5;
 }
 
 .search-container {
@@ -304,9 +378,13 @@ body {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background: white;
+  background: var(--card);
   border-radius: 1rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+:root.dark .skeleton-container {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .skeleton {
@@ -314,6 +392,11 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 0.5rem;
+}
+
+:root.dark .skeleton {
+  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  background-size: 200% 100%;
 }
 
 .skeleton-header {
@@ -369,6 +452,7 @@ body {
 }
 
 /* Portfolio Layouts */
+/* Force light mode inside portfolio - it's a print preview */
 .portfolio-container {
   max-width: 900px;
   margin: 0 auto;
@@ -381,6 +465,15 @@ body {
   box-sizing: border-box;
   position: relative;
   border-radius: 4px;
+  /* Override dark mode variables inside portfolio */
+  --text: #0f172a;
+  --text-muted: #475569;
+  --border: #e2e8f0;
+  --primary: #3b82f6;
+  --card: #ffffff;
+  --background: #f8fafc;
+  --background-secondary: #e2e8f0;
+  color: #0f172a;
 }
 
 .portfolio-header {
@@ -711,6 +804,12 @@ body {
   box-sizing: border-box;
 }
 
+:root.dark .preview-action-bar {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
 @media (min-width: 640px) {
   .preview-action-bar {
     flex-direction: row;
@@ -753,14 +852,14 @@ body {
 }
 
 .btn-secondary {
-  background: white;
+  background: var(--card);
   color: var(--text);
   border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: var(--background-secondary);
+  border-color: var(--border);
 }
 
 .preview-actions .btn {
@@ -779,6 +878,12 @@ body {
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
   overflow: auto;
   max-height: 70vh;
+}
+
+:root.dark .preview-container {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 768px) {

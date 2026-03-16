@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Git Portfolio PDF
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web app that generates a polished, downloadable PDF portfolio from any GitHub profile.
 
-Currently, two official plugins are available:
+Enter a GitHub username or profile URL, and the app fetches your public data — profile info, contribution heatmap, profile README, and pinned repositories — then renders it into a shareable PDF.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Instant profile lookup** — accepts a GitHub username or a full `github.com/` URL
+- **Contribution heatmap** — renders the past year of contribution activity
+- **Profile README** — pulls and renders the user's profile `README.md` with GFM support, filtering out badges and dynamic stat cards that don't render well in PDF
+- **Pinned repositories** — highlights up to 6 pinned repos (with a fallback to top-starred repos)
+- **PDF export** — one-click download via `html2canvas` + `jsPDF`
+- **Dark mode** — persisted via `localStorage`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org)
+- [Vite](https://vite.dev) for dev server and bundling
+- [Axios](https://axios-http.com) for API requests
+- [html2canvas](https://html2canvas.hertzen.com) + [jsPDF](https://artskydj.github.io/jsPDF/) for PDF generation
+- [react-markdown](https://github.com/remarkjs/react-markdown) with `remark-gfm` and `rehype-raw` for README rendering
+- [lucide-react](https://lucide.dev) for icons
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Data Sources
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Data | Source |
+|---|---|
+| User profile | [GitHub REST API](https://docs.github.com/en/rest/users) |
+| Contribution calendar | [github-contributions-api.deno.dev](https://github-contributions-api.deno.dev) |
+| Pinned repositories | [gh-pinned-repos.egoist.dev](https://gh-pinned-repos.egoist.dev) (falls back to GitHub REST API) |
+| Profile README | `raw.githubusercontent.com/{user}/{user}/main/README.md` |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+No GitHub token or authentication is required. All requests are made client-side.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then open [http://localhost:5173](http://localhost:5173).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+Output is in `dist/`.
+
+## Limitations
+
+- Contribution data depends on the third-party Deno API and may occasionally be unavailable
+- PDF rendering quality depends on `html2canvas`, which captures the DOM as a canvas — very large profiles may produce large files
+- Private repositories and private contributions are not accessible without authentication

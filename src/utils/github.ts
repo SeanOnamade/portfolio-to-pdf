@@ -146,26 +146,43 @@ export const fetchGitHubUser = async (username: string): Promise<GitHubUser> => 
 };
 
 export const fetchPinnedRepos = async (username: string): Promise<PinnedRepo[]> => {
-  let pinned: PinnedRepo[] = [];
+  // Try egoist.dev first
   try {
     const response = await axios.get(`https://gh-pinned-repos.egoist.dev/?username=${username}`);
-    pinned = response.data;
-  } catch (error) {
-    console.warn('Failed to fetch pinned repos via proxy:', error);
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      return response.data;
+    }
+  } catch {
+    console.warn('gh-pinned-repos.egoist.dev failed, trying next API');
   }
 
-  // If proxy returned empty or failed, fallback to top repos
-  if (!pinned || pinned.length === 0) {
-    const response = await axios.get(`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`);
-    return response.data.map((repo: any) => ({
-      owner: repo.owner.login,
-      repo: repo.name,
-      description: repo.description,
-      language: repo.language,
-      stars: repo.stargazers_count,
-      forks: repo.forks_count,
-    }));
+  // Try berrysauce.dev (uses "author"/"name" instead of "owner"/"repo")
+  try {
+    const response = await axios.get(`https://pinned.berrysauce.dev/get/${username}`);
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map((repo: any) => ({
+        owner: repo.author,
+        repo: repo.name,
+        description: repo.description,
+        language: repo.language,
+        languageColor: repo.languageColor,
+        stars: repo.stars,
+        forks: repo.forks,
+      }));
+    }
+  } catch {
+    console.warn('pinned.berrysauce.dev failed, falling back to top repos');
   }
 
-  return pinned;
+  // Fallback: top repos sorted by stars
+  const response = await axios.get(`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`);
+  return response.data.map((repo: any) => ({
+    owner: repo.owner.login,
+    repo: repo.name,
+    description: repo.description,
+    language: repo.language,
+    languageColor: '',
+    stars: repo.stargazers_count,
+    forks: repo.forks_count,
+  }));
 };

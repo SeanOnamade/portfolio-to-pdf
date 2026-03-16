@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Search, Download, Github, Loader2, AlertCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Search, Download, Github, Loader2, AlertCircle, Moon, Sun } from 'lucide-react'
 import { fetchGitHubUser, fetchPinnedRepos } from './utils/github'
 import type { GitHubUser, PinnedRepo } from './utils/github'
 import { generatePDF } from './utils/pdf'
@@ -11,6 +11,15 @@ function App() {
   const [error, setError] = useState('')
   const [userData, setUserData] = useState<{ user: GitHubUser; pinnedRepos: PinnedRepo[] } | null>(null)
   const [generating, setGenerating] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode')
+    return saved ? JSON.parse(saved) : false
+  })
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode)
+    localStorage.setItem('darkMode', JSON.stringify(darkMode))
+  }, [darkMode])
 
   const handleFetch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,6 +65,15 @@ function App() {
 
   return (
     <div className="min-h-screen p-4 md:p-8">
+      {/* Dark mode toggle */}
+      <button
+        onClick={() => setDarkMode(!darkMode)}
+        className="theme-toggle"
+        aria-label="Toggle dark mode"
+      >
+        {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
+
       <div className={userData ? 'max-w-6xl mx-auto' : 'max-w-4xl mx-auto'}>
         {!userData && !loading && (
           <header className="hero-section fade-in">
